@@ -4,9 +4,9 @@ name: schema-change-demo
 on:
   push:
     branches:
-      - master
-    paths:
-      - 'scripts/**'
+      - main
+    #paths:
+    # - 'scripts/**'
 
   workflow_dispatch:
 
