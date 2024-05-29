@@ -7,6 +7,7 @@ RETURNS VARCHAR
 LANGUAGE SQL
 EXECUTE AS OWNER
 AS
+$$
 DECLARE
   StagingDatabaseName VARCHAR;
   StagingSchemaName VARCHAR;
@@ -177,4 +178,5 @@ EXCEPTION
     err_msg := 'Error type : OTHER ERROR, SQLCODE : '|| sqlcode||', SQLERRM : '|| sqlerrm ||',SQLSTATE : '||sqlstate ||', Timestamp : '||CURRENT_TIMESTAMP();
     SYSTEM$LOG('ERROR', err_msg);
     RAISE;
-END;
+END
+$$;
