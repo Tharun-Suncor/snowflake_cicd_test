@@ -1,0 +1,46 @@
+name: Snowflake_CICD_DA
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install Python packages
+        run: pip install -r requirements.txt
+
+      - name: Configure SnowCLI
+        env:
+          SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+        run: |
+          cd $GITHUB_WORKSPACE
+          echo "[connections]" > config.toml
+          echo "[connections.dev]" >> config.toml
+          echo "account =\"'$SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT\"" >> config.toml
+
+      - name: Deploy demo objects
+        env:
+          SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_CONNECTIONS_DEV_USER: ${{ secrets.SNOWFLAKE_USER }}
+          SNOWFLAKE_CONNECTIONS_DEV_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_CONNECTIONS_DEV_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+          SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_CONNECTIONS_DEV_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_CONNECTIONS_DEV_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
+        run: |
+          snow -config-file $GITHUB_WORKSPACE/config.toml sql -q "ALTER GIT REPOSITORY DEMO_REPO FETCH"
+          for sql_file in $(find $GITHUB_WORKSPACE/SANDBOX/Schemas/EDW/Tables -name '*.sql'); do
+            snow -- config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @snowflake_cicd/branches/snowflake_objects/SnowflakeObjects/${sql_file}"
+          done
