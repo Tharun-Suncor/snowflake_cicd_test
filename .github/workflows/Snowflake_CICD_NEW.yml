@@ -39,7 +39,6 @@ jobs:
           SNOWFLAKE_CONNECTIONS_DEV_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
           SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
           SNOWFLAKE_CONNECTIONS_DEV_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
-          SNOWFLAKE_CONNECTIONS_DEV_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
         run: |
           snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "ALTER GIT REPOSITORY snowflake_cicd FETCH"
           for sql_file in $(find $GITHUB_WORKSPACE -name '*.sql'); do
