@@ -49,7 +49,7 @@ jobs:
           SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
           SNOWFLAKE_CONNECTIONS_DEV_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
         run: |
-          snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "ALTER GIT REPOSITORY snowflake_cicd FETCH"
+          snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "ALTER GIT REPOSITORY SANDBOX.PUBLIC.snowflake_cicd FETCH"
           for sql_file in $(find $GITHUB_WORKSPACE -name '*.sql'); do
             snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @snowflake_cicd/branches/main/snowflake_objects/SnowflakeObjects/${sql_file}"
           done
