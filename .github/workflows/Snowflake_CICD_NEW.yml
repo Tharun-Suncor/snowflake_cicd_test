@@ -42,5 +42,5 @@ jobs:
         run: |
           snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "ALTER GIT REPOSITORY snowflake_cicd_test FETCH"
           for sql_file in $(find $GITHUB_WORKSPACE -name '*.sql'); do
-            snow -- config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @snowflake_cicd_test/branches/main/snowflake_objects/SnowflakeObjects/${sql_file}"
+            snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @snowflake_cicd_test/branches/main/snowflake_objects/SnowflakeObjects/${sql_file}"
           done
