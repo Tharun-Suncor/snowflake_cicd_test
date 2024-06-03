@@ -25,10 +25,11 @@ jobs:
         env:
           SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
         run: |
-          cd $GITHUB_WORKSPACE
-          echo "[connections]" > config.toml
+          echo "[default]" > config.toml
+          echo "connection = 'dev'" >> config.toml
           echo "[connections.dev]" >> config.toml
           echo "account =\"'$SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT\"" >> config.toml
+          chmod 0600 config.toml
 
       - name: Deploy demo objects
         env:
