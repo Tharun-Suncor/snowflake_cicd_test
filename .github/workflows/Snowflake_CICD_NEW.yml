@@ -41,7 +41,7 @@ jobs:
           SNOWFLAKE_CONNECTIONS_DEV_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
           SNOWFLAKE_CONNECTIONS_DEV_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
         run: |
-          snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "ALTER GIT REPOSITORY snowflake_cicd_test FETCH"
+          snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "ALTER GIT REPOSITORY snowflake_cicd FETCH"
           for sql_file in $(find $GITHUB_WORKSPACE -name '*.sql'); do
-            snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @snowflake_cicd_test/branches/main/snowflake_objects/SnowflakeObjects/${sql_file}"
+            snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @snowflake_cicd/branches/main/snowflake_objects/SnowflakeObjects/${sql_file}"
           done
