@@ -49,9 +49,7 @@ jobs:
           #chmod 0600 config.toml
           
       - name: Display config.toml
-        run: |
-          snow connection set-default "dev"
-          cat $GITHUB_WORKSPACE/config.toml
+        run: cat $GITHUB_WORKSPACE/config.toml
 
       - name: Deploy demo objects
         env:
