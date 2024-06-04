@@ -36,13 +36,14 @@ jobs:
           echo "[connections]" > config.toml
           echo "[connections.dev]" >> config.toml
           echo "account = \"$SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT\"" >> config.toml
-          echo "user = \"$SNOWFLAKE_CONNECTIONS_DEV_USER\"" >> config.toml
-          echo "password = \"$SNOWFLAKE_CONNECTIONS_DEV_PASSWORD\"" >> config.toml
-          echo "role = \"$SNOWFLAKE_CONNECTIONS_DEV_ROLE\"" >> config.toml
-          echo "warehouse = \"$SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE\"" >> config.toml
-          echo "database = \"$SNOWFLAKE_CONNECTIONS_DEV_DATABASE\"" >> config.toml
-          echo "schema = \"$SNOWFLAKE_CONNECTIONS_DEV_SCHEMA\"" >> config.toml
-          echo "default_connection_name = \"dev\"" >> config.toml
+          # echo "user = \"$SNOWFLAKE_CONNECTIONS_DEV_USER\"" >> config.toml
+          # echo "password = \"$SNOWFLAKE_CONNECTIONS_DEV_PASSWORD\"" >> config.toml
+          # echo "role = \"$SNOWFLAKE_CONNECTIONS_DEV_ROLE\"" >> config.toml
+          # echo "warehouse = \"$SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE\"" >> config.toml
+          # echo "database = \"$SNOWFLAKE_CONNECTIONS_DEV_DATABASE\"" >> config.toml
+          # echo "schema = \"$SNOWFLAKE_CONNECTIONS_DEV_SCHEMA\"" >> config.toml
+          # echo "default_connection_name = \"dev\"" >> config.toml
+          SNOW --help
           snow connection set-default "dev"
           chmod 0600 config.toml
           
