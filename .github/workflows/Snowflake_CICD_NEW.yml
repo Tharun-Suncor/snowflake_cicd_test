@@ -35,18 +35,18 @@ jobs:
           echo "[connections]" > config.toml
           echo "[connections.dev]" >> config.toml
           echo "account = \"$SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT\"" >> config.toml
-          # echo "user = \"$SNOWFLAKE_CONNECTIONS_DEV_USER\"" >> config.toml
-          # echo "password = \"$SNOWFLAKE_CONNECTIONS_DEV_PASSWORD\"" >> config.toml
-          # echo "role = \"$SNOWFLAKE_CONNECTIONS_DEV_ROLE\"" >> config.toml
-          # echo "warehouse = \"$SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE\"" >> config.toml
-          # echo "database = \"$SNOWFLAKE_CONNECTIONS_DEV_DATABASE\"" >> config.toml
-          # echo "schema = \"$SNOWFLAKE_CONNECTIONS_DEV_SCHEMA\"" >> config.toml
+          echo "user = \"$SNOWFLAKE_CONNECTIONS_DEV_USER\"" >> config.toml
+          echo "password = \"$SNOWFLAKE_CONNECTIONS_DEV_PASSWORD\"" >> config.toml
+          echo "role = \"$SNOWFLAKE_CONNECTIONS_DEV_ROLE\"" >> config.toml
+          echo "warehouse = \"$SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE\"" >> config.toml
+          echo "database = \"$SNOWFLAKE_CONNECTIONS_DEV_DATABASE\"" >> config.toml
+          echo "schema = \"$SNOWFLAKE_CONNECTIONS_DEV_SCHEMA\"" >> config.toml
           echo "default_connection_name = \"dev\"" >> config.toml
           snow --help
           cat $GITHUB_WORKSPACE/config.toml
           snow --config-file $GITHUB_WORKSPACE/config.toml
-  
-          #chmod 0600 config.toml
+          chown $USER $GITHUB_WORKSPACE/config.toml
+          chmod 0600 $GITHUB_WORKSPACE/config.toml
           
       - name: Display config.toml
         run: cat $GITHUB_WORKSPACE/config.toml
