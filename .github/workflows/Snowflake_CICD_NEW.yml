@@ -42,6 +42,7 @@ jobs:
           echo "warehouse = \"$SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE\"" >> config.toml
           echo "database = \"$SNOWFLAKE_CONNECTIONS_DEV_DATABASE\"" >> config.toml
           echo "schema = \"$SNOWFLAKE_CONNECTIONS_DEV_SCHEMA\"" >> config.toml
+          default_connection_name = \"dev\""
           chmod 0600 config.toml
           
       - name: Display config.toml
