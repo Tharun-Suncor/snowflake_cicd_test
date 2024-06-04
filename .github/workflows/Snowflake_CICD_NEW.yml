@@ -26,20 +26,17 @@ jobs:
           SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
         run: |
           cd $GITHUB_WORKSPACE
-          echo "[default]" > config.toml
-          echo "connection = 'dev'" >> config.toml
+          echo "[connections]" > config.toml
           echo "[connections.dev]" >> config.toml
-          echo "account = '$SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT'" >> config.toml
-          echo "user = '$SNOWFLAKE_CONNECTIONS_DEV_USER'" >> config.toml
-          echo "password = '$SNOWFLAKE_CONNECTIONS_DEV_PASSWORD'" >> config.toml
-          echo "role = '$SNOWFLAKE_CONNECTIONS_DEV_ROLE'" >> config.toml
-          echo "warehouse = '$SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE'" >> config.toml
-          echo "database = '$SNOWFLAKE_CONNECTIONS_DEV_DATABASE'" >> config.toml
-          echo "schema = '$SNOWFLAKE_CONNECTIONS_DEV_SCHEMA'" >> config.toml
+          echo "account = \"$SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT\"" >> config.toml
+          # echo "user = \"$SNOWFLAKE_CONNECTIONS_DEV_USER\"" >> onfig.toml
+          # echo "password = '$SNOWFLAKE_CONNECTIONS_DEV_PASSWORD'" >> config.toml
+          # echo "role = '$SNOWFLAKE_CONNECTIONS_DEV_ROLE'" >> config.toml
+          # echo "warehouse = '$SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE'" >> config.toml
+          # echo "database = '$SNOWFLAKE_CONNECTIONS_DEV_DATABASE'" >> config.toml
+          # echo "schema = '$SNOWFLAKE_CONNECTIONS_DEV_SCHEMA'" >> config.toml
           chmod 0600 config.toml
-
-          chmod 0600 config.toml
-
+          
       - name: Deploy demo objects
         env:
           SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
