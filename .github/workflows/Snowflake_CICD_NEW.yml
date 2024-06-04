@@ -50,10 +50,6 @@ jobs:
           export SNOWFLAKE_DEFAULT_CONNECTION_NAME="dev"
           snow --config-file config.toml connection set-default dev
           
-      # - name: Display config.toml
-      #   run: |
-      #     snow connection set-default \"dev\"
-      #     cat $GITHUB_WORKSPACE/config.toml
 
       - name: Deploy demo objects
         env:
@@ -68,5 +64,6 @@ jobs:
           snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "ALTER GIT REPOSITORY SANDBOX.PUBLIC.snowflake_cicd FETCH"
           for sql_file in $(find $GITHUB_WORKSPACE/snowflake_objects -name '*.sql'); do
             relative_path="${sql_file#$GITHUB_WORKSPACE/}"
-            snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM SANDBOX.PUBLIC.snowflake_cicd/branches/main/$relative_path"
+            echo relative_path
+            #snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM SANDBOX.PUBLIC.snowflake_cicd/branches/main/$relative_path"
           done
