@@ -18,25 +18,31 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Python packages
+      - name: Install Snowflake CLI Labs
         run: pip install snowflake-cli-labs
 
       - name: Configure SnowCLI
         env:
           SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+          SNOWFLAKE_CONNECTIONS_DEV_USER: ${{ secrets.SNOWFLAKE_USERNAME }}
+          SNOWFLAKE_CONNECTIONS_DEV_PASSWORD: ${{ secrets.SNOWFLAKE_PASSWORD }}
+          SNOWFLAKE_CONNECTIONS_DEV_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
+          SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+          SNOWFLAKE_CONNECTIONS_DEV_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_CONNECTIONS_DEV_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
         run: |
           cd $GITHUB_WORKSPACE
           echo "[connections]" > config.toml
           echo "[connections.dev]" >> config.toml
           echo "account = \"$SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT\"" >> config.toml
-          echo "user = \"$SNOWFLAKE_CONNECTIONS_DEV_USER\"" >> onfig.toml
+          echo "user = \"$SNOWFLAKE_CONNECTIONS_DEV_USER\"" >> config.toml
           echo "password = \"$SNOWFLAKE_CONNECTIONS_DEV_PASSWORD\"" >> config.toml
           echo "role = \"$SNOWFLAKE_CONNECTIONS_DEV_ROLE\"" >> config.toml
           echo "warehouse = \"$SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE\"" >> config.toml
           echo "database = \"$SNOWFLAKE_CONNECTIONS_DEV_DATABASE\"" >> config.toml
           echo "schema = \"$SNOWFLAKE_CONNECTIONS_DEV_SCHEMA\"" >> config.toml
-          #chmod 0600 config.toml
-          
+          chmod 0600 config.toml
+
       - name: Deploy demo objects
         env:
           SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT: ${{ secrets.SNOWFLAKE_ACCOUNT }}
@@ -45,8 +51,10 @@ jobs:
           SNOWFLAKE_CONNECTIONS_DEV_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
           SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
           SNOWFLAKE_CONNECTIONS_DEV_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
+          SNOWFLAKE_CONNECTIONS_DEV_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
         run: |
           snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "ALTER GIT REPOSITORY SANDBOX.PUBLIC.snowflake_cicd FETCH"
-          for sql_file in $(find $GITHUB_WORKSPACE -name '*.sql'); do
-            snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM @snowflake_cicd/branches/main/snowflake_objects/SnowflakeObjects/${sql_file}"
+          for sql_file in $(find $GITHUB_WORKSPACE/snowflake_objects -name '*.sql'); do
+            relative_path="${sql_file#$GITHUB_WORKSPACE/}"
+            snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM SANDBOX.PUBLIC.snowflake_cicd/branches/main/$relative_path"
           done
