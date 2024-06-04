@@ -33,8 +33,8 @@ jobs:
           SNOWFLAKE_CONNECTIONS_DEV_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
         run: |
           cd $GITHUB_WORKSPACE
-          echo "[connections]" > config.toml
-          echo "[connections.dev]" >> config.toml
+          # echo "[connections]" > config.toml
+          echo "[connections.dev]" > config.toml
           echo "account = \"$SNOWFLAKE_CONNECTIONS_DEV_ACCOUNT\"" >> config.toml
           echo "user = \"$SNOWFLAKE_CONNECTIONS_DEV_USER\"" >> config.toml
           echo "password = \"$SNOWFLAKE_CONNECTIONS_DEV_PASSWORD\"" >> config.toml
