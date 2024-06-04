@@ -42,6 +42,7 @@ jobs:
           echo "database = \"$SNOWFLAKE_CONNECTIONS_DEV_DATABASE\"" >> config.toml
           echo "schema = \"$SNOWFLAKE_CONNECTIONS_DEV_SCHEMA\"" >> config.toml
           echo "default_connection_name = \"dev\"" >> config.toml
+          export SNOWFLAKE_DEFAULT_CONNECTION_NAME="dev"
           snow --help
           cat $GITHUB_WORKSPACE/config.toml
           snow --config-file $GITHUB_WORKSPACE/config.toml
