@@ -1,3 +1,4 @@
+
 name: Snowflake_CICD_DA
 
 on:
@@ -42,6 +43,9 @@ jobs:
           echo "database = \"$SNOWFLAKE_CONNECTIONS_DEV_DATABASE\"" >> config.toml
           echo "schema = \"$SNOWFLAKE_CONNECTIONS_DEV_SCHEMA\"" >> config.toml
           chmod 0600 config.toml
+          
+      - name: Display config.toml
+        run: cat $GITHUB_WORKSPACE/config.toml
 
       - name: Deploy demo objects
         env:
