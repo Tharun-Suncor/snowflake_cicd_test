@@ -30,7 +30,6 @@ jobs:
           SNOWFLAKE_CONNECTIONS_DEV_ROLE: ${{ secrets.SNOWFLAKE_ROLE }}
           SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
           SNOWFLAKE_CONNECTIONS_DEV_DATABASE: ${{ secrets.SNOWFLAKE_DATABASE }}
-          SNOWFLAKE_CONNECTIONS_DEV_SCHEMA: ${{ secrets.SNOWFLAKE_SCHEMA }}
         run: |
           cd $GITHUB_WORKSPACE
           echo "[connections]" > config.toml
@@ -42,13 +41,15 @@ jobs:
           # echo "warehouse = \"$SNOWFLAKE_CONNECTIONS_DEV_WAREHOUSE\"" >> config.toml
           # echo "database = \"$SNOWFLAKE_CONNECTIONS_DEV_DATABASE\"" >> config.toml
           # echo "schema = \"$SNOWFLAKE_CONNECTIONS_DEV_SCHEMA\"" >> config.toml
-          # echo "default_connection_name = \"dev\"" >> config.toml
+          echo "default_connection_name = dev" >> config.toml
           snow --help
-          snow connection set-default "dev"
+  
           chmod 0600 config.toml
           
       - name: Display config.toml
-        run: cat $GITHUB_WORKSPACE/config.toml
+        run: |
+          snow connection set-default "dev"
+          cat $GITHUB_WORKSPACE/config.toml
 
       - name: Deploy demo objects
         env:
