@@ -46,7 +46,7 @@ jobs:
           cat $GITHUB_WORKSPACE/config.toml
           snow --config-file $GITHUB_WORKSPACE/config.toml
   
-          chmod 0600 config.toml
+          #chmod 0600 config.toml
           
       - name: Display config.toml
         run: |
