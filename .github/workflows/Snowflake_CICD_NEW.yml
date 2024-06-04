@@ -64,7 +64,7 @@ jobs:
           snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "ALTER GIT REPOSITORY SANDBOX.PUBLIC.snowflake_cicd FETCH"
           for sql_file in $(find $GITHUB_WORKSPACE/scripts/SnowflakeObjects -name '*.sql'); do
             relative_path="${sql_file#$GITHUB_WORKSPACE/}"
-            echo relative_path
+            echo $relative_path
             #snow --config-file $GITHUB_WORKSPACE/config.toml sql -q "EXECUTE IMMEDIATE FROM SANDBOX.PUBLIC.snowflake_cicd/branches/main/$relative_path"
           done
           # if [ -d "$GITHUB_WORKSPACE/snowflake_objects" ]; then
