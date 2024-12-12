@@ -1,0 +1,47 @@
+name: wf_manual_deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      deployment:
+        description: "environment"
+        required: true
+        type: choice
+        options:
+          - "dev"
+          - "qut"
+          - "prd"
+      dry_run:
+        description: 'Schemachange dry-run mode'
+        type: boolean
+        required: false
+        default: false
+
+jobs:
+  check_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if main branch is used
+        if: github.ref == 'refs/heads/main'
+        run: |
+          echo "Manual execution of this workflow on the 'main' branch is not allowed."
+          echo "This restriction is in place to prevent unintended changes or deployments directly to the main branch."
+          echo "Please use a feature branch or a different branch for testing and validation."
+          echo "Once changes are verified, you can merge them into the main branch through a pull request."
+          exit 1
+
+  validate_files_names:
+    needs: [check_branch]
+    name: validate_files_before_${{ github.event.inputs.deployment }}_deploy
+    uses: ./.github/workflows/wf_validation.yml
+    
+
+  
+  deploy:
+    needs: [validate_files_names]
+    uses: ./.github/workflows/wf_sf_deploy.yml
+    with:
+      environment: ${{ github.event.inputs.deployment }}
+      dry_run: ${{ github.event.inputs.dry_run }}
+    secrets:
+      inherit
