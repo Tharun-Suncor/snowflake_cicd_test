@@ -1,0 +1,64 @@
+name: wf_sf_deploy
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      dry_run:
+        description: 'Schemachange dry-run mode'
+        type: boolean
+        required: false
+        default: false
+
+
+env:
+  DRY_RUN_ARG: ${{ inputs.dry_run == true && ' --dry-run' || '' }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy on ${{ inputs.environment }}
+    environment: ${{ inputs.environment }}
+    env:
+      SNOWSQL_ACCOUNT: ${{ vars.SNOWFLAKE_ACCOUNT }}
+      SNOWSQL_WAREHOUSE: ${{ vars.SNOWFLAKE_WAREHOUSE }} 
+      SNOWSQL_DATABASE: ${{ vars.SNOWFLAKE_DATABASE }}
+      SNOWSQL_USER: ${{ vars.SNOWFLAKE_USER }}
+      SNOWSQL_ROLE: ${{ vars.SNOWFLAKE_ROLE }}
+      SNOWFLAKE_PRIVATE_KEY_PASSPHRASE: ${{ secrets.SNOWFLAKE_PASSPHRASE }}
+      SNOWFLAKE_PRIVATE_KEY_PATH: ${{ github.workspace }}/rsa_key.p8
+      # SNOWFLAKE_EXTERNAL_VOLUME: ${{ vars.SNOWFLAKE_EXTERNAL_VOLUME }}
+      # SNOWFLAKE_EXTERNAL_VOLUME_CASE_2: ${{ vars.SNOWFLAKE_EXTERNAL_VOLUME_CASE_2}}
+      # SNOWFLAKE_EXTERNAL_VOLUME_PQA: ${{ vars.SNOWFLAKE_EXTERNAL_VOLUME_PQA}}
+      # SNOWFLAKE_EXTERNAL_VOLUME_SILVER_CURATED: ${{ vars.SNOWFLAKE_EXTERNAL_VOLUME_SILVER_CURATED}}
+      # SNOWFLAKE_EXTERNAL_VOLUME_MEP: ${{ vars.SNOWFLAKE_EXTERNAL_VOLUME_MEP}}
+
+    steps:          
+      - name: Retrieve Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Save Secret to File
+        run: echo "${{ secrets.SNOWFLAKE_PRIVATE_KEY }}" > ${{ env.SNOWFLAKE_PRIVATE_KEY_PATH }}
+      - name: Use Python 3.13.x
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.13.x
+      - name: Deploy Snowflake Objects
+        run: |          
+          pip install -q schemachange==3.7.0
+          schemachange \
+            --config-folder ${{ github.workspace }}/CONFIG \
+            -f ${{ github.workspace }}/SILVER \
+            -a $SNOWSQL_ACCOUNT \
+            -u $SNOWSQL_USER \
+            -r $SNOWSQL_ROLE \
+            -w $SNOWSQL_WAREHOUSE \
+            -d $SNOWSQL_DATABASE \
+            -c $SNOWSQL_DATABASE.SCHEMACHANGE.CHANGE_HISTORY \
+            --create-change-history-table ${{ env.DRY_RUN_ARG }}
+
+      - name: Delete secret file
+        run: rm ${{ env.SNOWFLAKE_PRIVATE_KEY_PATH }}

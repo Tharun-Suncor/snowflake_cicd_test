@@ -1,0 +1,65 @@
+name: wf_master
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - SILVER/**
+
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Set to true for a dry run deployment.'
+        type: boolean
+        default: false
+
+concurrency: 
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+  
+run-name: Deploy for ${{ github.event_name }} by @${{ github.actor }}
+
+jobs:
+  check_branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if running in main branch
+        run: |
+          if [ "${{ github.ref }}" != "refs/heads/main" ]; then
+            echo "This workflow can only be run on the main branch."
+            exit 1
+          fi
+
+  deploy_dev:
+    uses: ./.github/workflows/wf_sf_deploy.yml
+    with:
+      environment: dev
+      dry_run: ${{ github.event.inputs.dry_run || false }}
+    secrets: inherit
+
+  deploy_qut:
+    needs: deploy_dev
+    uses: ./.github/workflows/wf_sf_deploy.yml
+    with:
+      environment: qut
+      dry_run: ${{ github.event.inputs.dry_run || false }}
+    secrets: inherit
+
+  deploy_prd:
+    needs: deploy_qut
+    uses: ./.github/workflows/wf_sf_deploy.yml
+    with:
+      environment: prd
+      dry_run: ${{ github.event.inputs.dry_run || false }}
+    secrets: inherit
+  
+  release:
+    name: Create Release
+    needs: deploy_prd
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: SEApplicationsOrg/ed-dataplatform-github/.github/actions/create-release@main
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
