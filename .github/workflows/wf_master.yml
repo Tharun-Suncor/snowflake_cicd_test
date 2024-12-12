@@ -35,7 +35,7 @@ jobs:
     uses: ./.github/workflows/wf_sf_deploy.yml
     with:
       environment: dev
-      dry_run: ${{ github.event.inputs.dry_run || false }}
+      dry_run: ${{ inputs.dry_run || false }}
     secrets: inherit
 
   deploy_qut:
@@ -43,7 +43,7 @@ jobs:
     uses: ./.github/workflows/wf_sf_deploy.yml
     with:
       environment: qut
-      dry_run: ${{ github.event.inputs.dry_run || false }}
+      dry_run: ${{ inputs.dry_run || false }}
     secrets: inherit
 
   deploy_prd:
@@ -51,7 +51,7 @@ jobs:
     uses: ./.github/workflows/wf_sf_deploy.yml
     with:
       environment: prd
-      dry_run: ${{ github.event.inputs.dry_run || false }}
+      dry_run: ${{ inputs.dry_run || false }}
     secrets: inherit
   
   release:
