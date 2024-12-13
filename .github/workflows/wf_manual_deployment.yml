@@ -36,12 +36,11 @@ jobs:
     uses: ./.github/workflows/wf_validation.yml
     
 
-  
   deploy:
     needs: [validate_files_names]
     uses: ./.github/workflows/wf_sf_deploy.yml
     with:
-      environment: ${{ github.event.inputs.deployment }}
-      dry_run: ${{ github.event.inputs.dry_run }}
+      environment: ${{ inputs.deployment }}
+      dry_run: ${{ inputs.dry_run }}
     secrets:
       inherit
