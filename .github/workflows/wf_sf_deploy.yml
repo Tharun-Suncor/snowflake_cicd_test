@@ -57,8 +57,8 @@ jobs:
             -r $SNOWSQL_ROLE \
             -w $SNOWSQL_WAREHOUSE \
             -d $SNOWSQL_DATABASE \
-            -c $SNOWSQL_DATABASE.SCHEMACHANGE.CHANGE_HISTORY \
-            --create-change-history-table ${{ env.DRY_RUN_ARG }}
+            -c $SNOWSQL_DATABASE.SCHEMACHANGE.CHANGE_HISTORY ${{ env.DRY_RUN_ARG }}
+             
 
       - name: Delete secret file
         run: rm ${{ env.SNOWFLAKE_PRIVATE_KEY_PATH }}
